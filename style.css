@@ -1,0 +1,100 @@
+/* Green & White Theme - consolidated and cleaned */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #eafaf1; /* soft green background */
+    color: #0f172a; /* dark slate text */
+    margin: 0;
+}
+
+/* Ensure the main container takes full viewport height for centering */
+#app { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding:2rem; }
+
+/* White card container (main content) */
+#main-content, .max-w-4xl {
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(2,6,23,0.08);
+    border: 1px solid rgba(15,23,42,0.04);
+}
+
+/* Header style (CDCFIB green) */
+.site-header {
+    display: inline-block;
+    background: #007a3d; /* CDCFIB-style green (adjust if you have an exact hex) */
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+/* Ensure header is centered on the start screen */
+#start-screen { text-align: center; }
+
+/* Style for selected options (user's temporary selection) */
+.option-selected {
+    background-color: #16a34a !important; /* green-600 */
+    color: white !important;
+    border-color: #15803d !important; /* green-700 */
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(6,95,70,0.12);
+}
+
+/* Style for correct answers in review mode */
+.option-correct {
+    background-color: #10b981 !important; /* Emerald-500 (Green) */
+    color: white !important;
+    border-color: #059669 !important; /* Emerald-600 */
+    font-weight: 600; /* Semi-bold */
+}
+
+/* Style for incorrect answers in review mode (user's wrong choice) */
+.option-incorrect {
+    background-color: #ef4444 !important; /* Red-500 */
+    color: white !important;
+    border-color: #dc2626 !important; /* Red-600 */
+    font-weight: 600; /* Semi-bold */
+}
+
+/* Primary button styling */
+.bg-blue-600, .bg-green-600, button.primary, #start-button {
+    background: linear-gradient(180deg,#16a34a,#15803d);
+    color: #fff;
+    border: none;
+}
+
+button {
+    transition: background-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+button:hover:not(:disabled) {
+    box-shadow: 0 10px 20px rgba(2,6,23,0.08);
+    transform: translateY(-2px);
+}
+
+/* Style for the grid to ensure mobile responsiveness */
+#navigation-grid {
+    grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
+}
+
+/* Footer styles */
+footer {
+    margin-top: 1rem;
+    text-align: center;
+    color: #064e3b;
+}
+footer a { color: #065f46; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* Make footer visible and fixed at the bottom so it isn't hidden by layout */
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: #ffffff; /* white bar */
+    border-top: 1px solid rgba(6,95,70,0.06);
+    padding: 0.5rem 0;
+    z-index: 2000;
+}
+
+/* Prevent the fixed footer from covering content: add bottom padding to main app */
+#app { padding-bottom: 3rem; }

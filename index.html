@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Exam Simulator (Fixed Files)</title>
+    <!-- Load Tailwind CSS from CDN for styling utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Link to the external CSS file for custom styles (style.css) -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Configuration for Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+    </style>
+</head>
+<body>
+
+<!-- Main application container (Flexbox for centering) -->
+<div id="app" class="flex flex-col items-center justify-center p-4">
+
+    <!-- Loading State Indicator (Hidden by default, controlled by script.js) -->
+    <div id="loading-spinner" class="absolute inset-0 bg-gray-100 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="flex flex-col items-center p-6 bg-white rounded-xl shadow-2xl">
+            <!-- Tailwind CSS spinner SVG -->
+            <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="mt-4 text-lg font-medium text-gray-700">Connecting to portal...</p>
+            <p class="mt-2 text-xs text-gray-500">(Bypassing online mode for local use.)</p>
+        </div>
+    </div>
+
+    <!-- Main Card Container -->
+    <div id="main-content" class="w-full max-w-4xl bg-white rounded-xl shadow-2xl p-6 md:p-10 transition-all duration-300">
+
+        <!-- Stage 1: Start Screen -->
+        <div id="start-screen" class="space-y-6">
+            <h1 class="text-4xl font-extrabold text-center site-header mb-4">CDCFIB Practice Test</h1>
+            <p class="text-md text-center text-gray-600 mb-6 font-semibold border-b pb-4">
+                All exams contain a mix of Mathematics, English, General Knowledge, and the Selected Department focus.
+            </p>
+            
+            <label for="name-input" class="block text-sm font-medium text-gray-700">Your Name / Candidate ID:</label>
+            <input type="text" id="name-input" placeholder="e.g., John Doe" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 shadow-sm" maxlength="50">
+
+            <label for="department-select" class="block text-sm font-medium text-gray-700 mt-4">Select Examination Focus (Department):</label>
+            <select id="department-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 shadow-sm bg-white">
+                <option value="CIVIL_DEFENCE_NSCDC">NSCDC (Civil Defence) Focus</option>
+                <option value="IMMIGRATION_NIS">NIS (Immigration Service) Focus</option>
+                <option value="FIRE_FFS">FFS (Federal Fire Service) Focus</option>
+                <option value="CORRECTIONAL_NCS">NCS (Correctional Center) Focus</option>
+                <option value="GENERAL_ALL">General (Balanced Mix)</option>
+            </select>
+            
+            <button id="start-button" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-xl transition duration-150 disabled:opacity-50 mt-6" disabled>
+                Proceed to Exam Lobby
+            </button>
+            <p id="user-info" class="text-xs text-center text-gray-400 mt-4">Secured User ID: <span id="auth-uid" class="font-mono">...</span></p>
+
+            <div id="error-message" class="text-red-500 text-sm text-center mt-3 hidden"></div>
+        </div>
+
+        <!-- Stage 2: Exam Lobby -->
+        <div id="lobby-screen" class="hidden text-center space-y-6">
+            <h2 class="text-3xl font-bold text-gray-800">Exam Details</h2>
+            <p class="text-xl text-green-600">Candidate: <span id="candidate-name-lobby" class="font-semibold"></span></p>
+            <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                <p class="text-lg font-medium text-gray-700">Focus Subject: <span id="department-lobby" class="font-semibold text-blue-700"></span></p>
+                <p class="text-lg font-medium text-gray-700">Total Questions: <span class="font-semibold text-blue-700">50</span> (From 4 subjects: Math, English, General, & Focus)</p>
+                <p class="text-lg font-medium text-gray-700">Time Allocated: <span class="font-semibold text-red-600">30 Minutes</span></p>
+            </div>
+            <button id="begin-exam-button" class="py-3 px-8 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg transition duration-150 mt-4">
+                Start Exam Now!
+            </button>
+        </div>
+
+        <!-- Stage 3: Exam Interface -->
+        <div id="exam-screen" class="hidden">
+            <div class="flex justify-between items-center mb-6 p-4 bg-gray-100 rounded-lg shadow-inner">
+                <h3 class="text-xl font-bold text-gray-700" id="exam-title"></h3>
+                <div class="text-3xl font-extrabold text-red-600 tracking-wider" id="timer">30:00</div>
+            </div>
+
+            <div id="question-container" class="bg-white p-6 border border-gray-200 rounded-lg shadow-lg mb-6">
+                <p class="text-lg font-medium mb-4 text-gray-800" id="question-text"></p>
+                <div id="options-container" class="space-y-3"></div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="flex space-x-3">
+                    <button id="prev-button" class="py-2 px-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-lg transition duration-150 disabled:opacity-50">
+                        &larr; Previous
+                    </button>
+                    <button id="next-button" class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50">
+                        Next &rarr;
+                    </button>
+                </div>
+                <button id="submit-exam-button" class="py-3 px-8 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-lg transition duration-150">
+                    SUBMIT EXAM
+                </button>
+            </div>
+            
+            <div id="navigation-grid" class="mt-6 p-4 bg-gray-100 rounded-lg border border-gray-200 grid grid-cols-10 gap-2">
+                <!-- Question buttons dynamically injected here -->
+            </div>
+        </div>
+
+        <!-- Stage 4: Results and Review -->
+        <div id="results-screen" class="hidden text-center space-y-6">
+            <h2 class="text-4xl font-extrabold text-green-700">Exam Completed!</h2>
+            <p class="text-xl text-gray-700">Candidate: <span id="candidate-name-results" class="font-semibold"></span></p>
+            
+            <div class="flex justify-center">
+                <div class="w-full max-w-sm bg-green-50 p-6 rounded-xl border-4 border-green-400 shadow-xl">
+                    <p class="text-xl font-semibold text-gray-700">Final Score</p>
+                    <p class="text-6xl font-black text-green-600" id="final-score">0/50</p>
+                    <p class="text-sm text-gray-500">Time Spent: <span id="time-spent"></span></p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold text-blue-700 pt-4 border-t mt-6">Detailed Review & Explanation</h3>
+            <div id="review-list" class="space-y-8 text-left">
+                <!-- Review cards injected here -->
+            </div>
+
+            <button id="restart-button" class="py-3 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition duration-150 mt-6">
+                Take Another Exam
+            </button>
+        </div>
+
+        <!-- Hidden Modal for Confirmation -->
+        <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md space-y-5 text-center">
+                <h4 class="text-2xl font-bold text-red-600">Confirm Submission</h4>
+                <p id="modal-text" class="text-gray-700">Are you sure you want to end the exam? You will not be able to change your answers.</p>
+                <div class="flex justify-center space-x-4">
+                    <button id="modal-confirm" class="py-2 px-6 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150">
+                        Yes, Submit
+                    </button>
+                    <button id="modal-cancel" class="py-2 px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-lg transition duration-150">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        <!-- Footer was here (moved outside modal to be visible) -->
+        </div>
+
+    </div>
+</div>
+
+<!-- Link to the external JavaScript file for logic (script.js) -->
+<!-- Footer -->
+<footer class="w-full text-center mt-6 text-sm text-gray-600">
+    <p>Contact: <a href="mailto:nicholasomozusi@gmail.com" class="text-green-600 hover:underline">nicholasomozusi@gmail.com</a> | Follow: <a href="https://x.com/@profwiseman1" target="_blank" rel="noreferrer" class="text-green-600 hover:underline">x.com/@profwiseman1</a></p>
+</footer>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
