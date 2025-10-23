@@ -12,13 +12,13 @@ An interactive CBT (Computer-Based Test) practice application for Civil Defence,
 
 ## Live Demo
 
-Access the live demo at: [https://YOUR-USERNAME.github.io/cdcfib-practice-test](https://YOUR-USERNAME.github.io/cdcfib-practice-test)
+Access the live demo at: [https://profwiseman.github.io/cdcfib-practice-test](https://profwiseman.github.io/cdcfib-practice-test)
 
 ## Local Development
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/YOUR-USERNAME/cdcfib-practice-test.git
+git clone https://github.com/profwiseman/cdcfib-practice-test.git
 cd cdcfib-practice-test
 ```
 
